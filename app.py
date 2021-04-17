@@ -7,7 +7,7 @@ import plotly.graph_objs as go
 beers=['Chesapeake Stout', 'Snake Dog IPA', 'Imperial Porter', 'Double Dog IPA']
 ibu_values=[35, 60, 85, 75]
 abv_values=[5.4, 7.1, 9.2, 4.3]
-color1='darkred'
+color1='#0000FF'
 color2='orange'
 mytitle='Beer Comparison'
 tabtitle='beer!'
@@ -53,7 +53,8 @@ app.layout = html.Div(children=[
         id='flyingdog',
         figure=beer_fig
     ),
-    html.A('Code on Github', href=githublink),
+    html.P('abb'),
+	html.A('Code on Github', href=githublink),
     html.Br(),
     html.A('Data Source', href=sourceurl),
     ]

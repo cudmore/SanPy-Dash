@@ -2,6 +2,13 @@
 
 https://austinlasseter.medium.com/how-to-deploy-a-simple-plotly-dash-app-to-heroku-622a2216eb73
 
+did not work, build errors with numpy
+
+now following simplified version:
+
+https://dash.plotly.com/deployment
+
+
 # How to deploy a simple Plotly Dash app on Heroku
 
 * You can view the finished app on [Heroku](https://flying-dog.herokuapp.com/).
