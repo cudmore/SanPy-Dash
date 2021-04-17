@@ -14,7 +14,7 @@ tabtitle='beer!'
 myheading='Flying Dog Beers'
 label1='IBU'
 label2='ABV'
-githublink='https://github.com/austinlasseter/flying-dog-beers'
+githublink='https://github.com/cudmore/SanPy-Dash'
 sourceurl='https://www.flyingdog.com/beers/'
 
 ########### Set up the chart
