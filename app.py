@@ -496,10 +496,12 @@ def dashMain():
 	return app, server
 
 # this needs to be global for heroku
-app, server = dashMain()
+#app, server = dashMain()
 
 if __name__ == '__main__':
 	# causing heroku to crash
 	#app = dashMain()
+	# procfile for Heroku is: web: gunicorn app:server
+	# expects app.py to have global variable "server"
 	app, server = dashMain()
 	app.run_server(debug=True)
