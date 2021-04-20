@@ -495,8 +495,8 @@ def dashMain():
 	#
 	return app, server
 
-# this needs to be global for heroku
-#app, server = dashMain()
+# "server" needs to be global for heroku
+app, server = dashMain()
 
 if __name__ == '__main__':
 	# causing heroku to crash
