@@ -139,6 +139,20 @@ statList['Region'] = {
 	'xStat': '',
 	'xStatUnits': ''
 	}
+statList['Sex'] = {
+	'yStat': 'Sex',
+	'yStatUnits': '',
+	'xStat': '',
+	'xStatUnits': ''
+	}
+statList['analysisname'] = {
+	'yStat': 'analysisname',
+	'yStatUnits': '',
+	'xStat': '',
+	'xStatUnits': ''
+	}
+'''
+
 '''
 # kymograph analysis
 statList['Ca++ Delay (s)'] = {
@@ -153,3 +167,4 @@ statList['Ca++ Width (ms)'] = {
 	'xStat': '',
 	'xStatUnits': ''
 	}
+'''
