@@ -498,5 +498,6 @@ def dashMain():
 app = dashMain()
 
 if __name__ == '__main__':
-	app = dashMain()
+	# causing heroku to crash
+	#app = dashMain()
 	app.run_server(debug=True)
