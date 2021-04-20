@@ -494,6 +494,9 @@ def dashMain():
 
 	return app
 
+# this needs to be global for heroku
+app = dashMain()
+
 if __name__ == '__main__':
 	app = dashMain()
 	app.run_server(debug=True)

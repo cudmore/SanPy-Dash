@@ -31,3 +31,21 @@ My Heroku dashboard is at https://dashboard.heroku.com/apps/sanpy/deploy/github
 Need to manually deploy heroku app after each git push to sanpy-dash
 
 There is also dash bio for bioinformatics plotting: https://dash.plotly.com/dash-bio
+
+## PyQt to show dash web interface
+
+### Install
+
+```
+python -m venv sanpy-dash-qt-env
+source sanpy-dash-qt-env/bin/activate
+pip install -r requirements.txt
+pip install -r requirements-pyqt.txt
+```
+
+### Run
+
+```
+source sanpy-dash-qt-env/bin/activate
+python qtDash.py
+```
