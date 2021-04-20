@@ -492,12 +492,14 @@ def dashMain():
 		#
 		return fig, xMeanDf.to_dict('records'), yMeanDf.to_dict('records')
 
-	return app
+	#
+	return server
 
 # this needs to be global for heroku
-app = dashMain()
+#server = dashMain()
 
 if __name__ == '__main__':
 	# causing heroku to crash
 	#app = dashMain()
+	server = dashMain()
 	app.run_server(debug=True)
