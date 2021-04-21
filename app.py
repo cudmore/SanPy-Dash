@@ -45,6 +45,29 @@ def makeDropdown(id, itemList, defaultItem):
 	#
 	return ret
 
+def makeCheckList(id, itemList, defaultItem):
+	options = [{'label': x, 'value': x} for x in itemList]
+	ret = dcc.Checklist(
+		id=id,
+		options=options,
+		value=[itemList[0]],
+		#labelStyle={'display': 'inline-block'}
+		labelStyle={"margin-right": "15px"}, # adds space between options list
+		inputStyle={"margin-right": "5px"}, # adds space between check and its label
+	), # Checklist
+	return ret
+
+def makeRadio(id, itemList, defaultItem):
+	options = [{'label': x, 'value': x} for x in itemList]
+	ret = dcc.RadioItems(
+		id=id,
+		options=options,
+		value=itemList[0],
+		labelStyle={"margin-right": "15px"}, # adds space between options list
+		inputStyle={"margin-right": "5px"}, # adds space between check and its label
+	)
+	return ret
+
 def makeTable(id, df, height=200, row_selectable='single', defaultRow=0):
 	"""
 	defaultRow: row index selected on __init__
@@ -57,7 +80,7 @@ def makeTable(id, df, height=200, row_selectable='single', defaultRow=0):
 		fixed_rows={'headers': True}, # on scroll, keep headers at top
 		selected_rows = [defaultRow], # default selected row
 		style_header={
-        	'backgroundColor': 'rgb(200, 200, 255)',
+			'backgroundColor': 'rgb(200, 200, 255)',
 			'fontWeight': 'bold',
 		},
 		style_cell={
@@ -139,7 +162,8 @@ def plotScatter(df, xStatCol, yStatCol, groupBy, colorBy, plotRaw=True, plotMean
 			xRaw = dfGroup[xStatCol].tolist()
 			yRaw = dfGroup[yStatCol].tolist()
 			rawScatter = go.Scatter(x=xRaw, y=yRaw,
-							name=group, # for legend
+							# for legend, str() needed because 'File Number' column is numpy.int64
+							name=str(group),
 							mode='markers',
 							marker=dict(
 								color=color,
@@ -212,7 +236,7 @@ def dashMain():
 
 	# todo: add this as param to __init__
 	# todo: implement 'None', in particular in getMean()
-	groupByList = ['analysisname', 'Region', 'Sex', 'Condition']
+	groupByList = ['File Number', 'analysisname', 'Region', 'Sex', 'Condition']
 	colorByList = ['None', 'analysisname', 'Region', 'Sex', 'Condition']
 
 	# todo: add as a parameter to __init__
@@ -242,68 +266,81 @@ def dashMain():
 	app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 	server = app.server
 
-	tmpOneRow = html.Div( # outer div
+	# a control panel div with dropdowns, checkbox, and radio
+	tmpControlDiv = html.Div(
 		[
 			dbc.Row(
 				[
 					dbc.Col(
-						html.Div([
-							html.Label('Plot Type'),
-							makeDropdown('plot-type-dropdown', plotTypeList, defaultDict['plotType'])
-							#dcc.Dropdown(
-							#	id='plot-type-dropdown',
-							#	options=[{'label': i, 'value': i} for i in plotTypeList],
-							#	value=plotTypeList[0],
-							#	)
-						])
-						),
+						html.Label('Plot Type')
+						, width="auto"
+					),
 					dbc.Col(
-						html.Div([
-							html.Label('Group By'),
-							makeDropdown('group-by-dropdown', groupByList, defaultDict['groupBy'])
-							#dcc.Dropdown(
-							#	id='group-by-dropdown',
-							#	options=[{'label': i, 'value': i} for i in groupByList],
-							#	value=groupByList[0],
-							#	)
-						]) # div
-						), # col
-					dbc.Col(
-						html.Div([
-							html.Label('Color By'),
-							makeDropdown('color-by-dropdown', colorByList, defaultDict['colorBy'])
-							#dcc.Dropdown(
-							#	id='color-by-dropdown',
-							#	options=[{'label': i, 'value': i} for i in colorByList],
-							#	value=colorByList[0],
-							#	)
-						])
-						),
-					# doto: make this radio
-					dbc.Col(
-						html.Div([
-							html.Label('Update Plot'),
-							makeDropdown('update-plot-dropdown', ['Left', 'Right'], 'Left')
-						])
-						),
-					dbc.Col(
-						html.Div([
-							html.Label('Plot Data'),
-							dcc.Checklist(
-								id='plot-options-check-list',
-								options=[
-									{'label': 'Raw', 'value': 'plot raw'},
-									{'label': 'Mean', 'value': 'plot mean'},
-								],
-								value=['plot raw'],
-								#labelStyle={'display': 'inline-block'}
-							), # Checklist
-						]) # div
-						), #col
+						makeDropdown('plot-type-dropdown', plotTypeList, defaultDict['plotType'])
+						#, width=3
+					),
 				],
 				#],no_gutters=True,
 			), # row
-		], className = 'container') # outerdiv
+			dbc.Row(
+				[
+					dbc.Col(
+						html.Label('Group By')
+						, width="auto"
+					),
+					dbc.Col(
+						makeDropdown('group-by-dropdown', groupByList, defaultDict['groupBy'])
+						#, width=3
+					),
+				],
+				#],no_gutters=True,
+			), # row
+			dbc.Row(
+				[
+					dbc.Col(
+						html.Label('Color By')
+						, width="auto"
+					),
+					dbc.Col(
+						makeDropdown('color-by-dropdown', colorByList, defaultDict['colorBy'])
+						#, width=3
+					),
+				],
+				#],no_gutters=True,
+			), # row
+			dbc.Label(''),
+			dbc.Row(
+				[
+					dbc.Col(
+						html.Label('Plot Data')
+						, width="auto"
+					),
+					dbc.Col(
+						makeCheckList('plot-options-check-list', ['Raw', 'Mean'], 'Raw')
+						#, width=3
+					),
+				],
+				#],no_gutters=True,
+			), # row
+			dbc.Label(''),
+			dbc.Row(
+				[
+					dbc.Col(
+						html.Label('Update Plot')
+						, width="auto"
+					),
+					dbc.Col(
+						makeRadio('update-plot-radio', ['Left', 'Right'], 'Left')
+						#, width=3
+					),
+				],
+				#],no_gutters=True,
+			), # row
+
+		], className = 'container', style={'font-size': '12px'})
+		#, style={'fontColor': 'blue'})
+		#]) # outerdiv
+
 	##
 	##
 	boxBorder = "0px black solid"
@@ -313,16 +350,27 @@ def dashMain():
 				[
 					dbc.Col(
 						html.Div([
+							html.Label('Parameters'),
+							tmpControlDiv
+						]
+						#,style={'font-size': '11px'}
+						) # div
+						,width=4,style={"border":boxBorder}
+					),
+					dbc.Col(
+						html.Div([
 							html.Label('X-Stat'),
 							makeTable('x-stat-table', statsDf, height=180, defaultRow=defaultDict['xDefaultRow'])
 						]) # div
-						,width=6,style={"border":boxBorder}), # col
+						,width=4,style={"border":boxBorder}
+					), # col
 					dbc.Col(
 						html.Div([
 							html.Label('Y-Stat'),
 							makeTable('y-stat-table', statsDf, height=180, defaultRow=defaultDict['yDefaultRow'])
 						]) # div
-						,width=6,style={"border":boxBorder}), # col
+						,width=4,style={"border":boxBorder}
+					), # col
 					#dbc.Col(
 					#	html.Div([
 					#		#html.Label('Color By'),
@@ -357,7 +405,8 @@ def dashMain():
 					dbc.Col(
 						html.Div([
 							html.Label('X Group By'),
-							makeTable('x-mean-table', xMeanDf, height=300, row_selectable=None),
+							#makeTable('x-mean-table', xMeanDf, height=300, row_selectable=None),
+							makeTable('x-mean-table', xMeanDf, height=300, row_selectable='multi'),
 						])
 						,width=6,style={"border":boxBorder}), # col
 					dbc.Col(
@@ -372,9 +421,10 @@ def dashMain():
 
 	app.layout = html.Div([
 		myNavBar,
-		tmpOneRow,
-		tmpOneRow2,
-		tmpOneRow3,
+		#tmpOneRow, # controls
+		#tmpControlDiv, # single div for all controls v2
+		tmpOneRow2, # x/y stat tables
+		tmpOneRow3, # plots
 	]) #, style={'columnCount': 3})
 
 	#
@@ -383,6 +433,7 @@ def dashMain():
 	@app.callback(
 		[
 			Output("scatter-plot-left", "figure"),
+			Output("scatter-plot-right", "figure"),
 			Output("x-mean-table", "data"),
 			Output("y-mean-table", "data"),
 		],
@@ -392,10 +443,11 @@ def dashMain():
 			Input('y-stat-table', 'selected_rows'),
 			Input('group-by-dropdown', 'value'),
 			Input('color-by-dropdown', 'value'),
-			Input('plot-options-check-list', 'value'),
+			Input('plot-options-check-list', 'value'), # (raw, mean)
+			Input('update-plot-radio', 'value'), # (left, right)
 		]
 		)
-	def f(plotType, xRow, yRow, groupBy, colorBy, plotOptions):
+	def f(plotType, xRow, yRow, groupBy, colorBy, plotOptions, plotLeftRight):
 		"""
 		Parameters:
 			plotType:
@@ -403,6 +455,7 @@ def dashMain():
 			groupBy:
 			plotOptions: List of options that are checked, like
 					['plot raw', 'plot mean']
+			plotLeftRight: plot to either the left or right plot
 		"""
 		print('=== f()')
 
@@ -412,6 +465,15 @@ def dashMain():
 		print('  groupBy:', groupBy)
 		print('  colorBy:', colorBy)
 		print('  plotOptions:', plotOptions)
+		print('  plotLeftRight:', plotLeftRight)
+
+		# use context ctx to determine who triggered callback
+		ctx = dash.callback_context
+		if not ctx.triggered:
+			idTriggered = 'No clicks yet'
+		else:
+			idTriggered = ctx.triggered[0]['prop_id'].split('.')[0]
+		print('  idTriggered:', idTriggered)
 
 		# x
 		if xRow is None:
@@ -449,8 +511,10 @@ def dashMain():
 
 		fig = go.Figure()
 
-		plotRaw = plotOptions is not None and 'plot raw' in plotOptions
-		plotMean = plotOptions is not None and 'plot mean' in plotOptions
+		#plotRaw = plotOptions is not None and 'plot raw' in plotOptions
+		#plotMean = plotOptions is not None and 'plot mean' in plotOptions
+		plotRaw = plotOptions is not None and 'Raw' in plotOptions
+		plotMean = plotOptions is not None and 'Mean' in plotOptions
 
 		#plotType = 'Histogram + Boxplot'
 		xAxisTitle = ''
@@ -486,12 +550,23 @@ def dashMain():
 				family="Arial",
 				size=12,
 				color="Black"
-			)
+			),
+			margin=dict(l=20, r=20, t=20, b=20),
 		)
 
 		#
-		return fig, xMeanDf.to_dict('records'), yMeanDf.to_dict('records')
-
+		# use dash.no_update to update left/right and keep other the same
+		if idTriggered == 'update-plot-radio':
+			# don't update plot when use just click on plot radio left/right
+			print('  user selected left/right -->> no update')
+			return dash.no_update, dash.no_update, dash.no_update, dash.no_update
+		elif plotLeftRight == 'Left':
+			#
+			return fig, dash.no_update, xMeanDf.to_dict('records'), yMeanDf.to_dict('records')
+		elif plotLeftRight == 'Right':
+			#
+			return dash.no_update, fig, xMeanDf.to_dict('records'), yMeanDf.to_dict('records')
+	#
 	#
 	return app, server
 
@@ -503,5 +578,5 @@ if __name__ == '__main__':
 	#app = dashMain()
 	# procfile for Heroku is: web: gunicorn app:server
 	# expects app.py to have global variable "server"
-	app, server = dashMain()
+	#app, server = dashMain()
 	app.run_server(debug=True)
