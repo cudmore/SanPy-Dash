@@ -21,7 +21,9 @@ for k,v in statList.items():
 	print(k, '\t', v['yStat'])
 '''
 
+# see: https://community.plotly.com/t/deploying-multi-page-app-to-heroku-not-deploying-as-set-up/7877/2
 from app import app
+from app import server # needed for heroku
 # import all pages in the app
 #from apps import global_situation, singapore, home
 from pages import mynavbar, uploadpage
